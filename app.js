@@ -1,0 +1,8 @@
+'use strict';
+const viewer=document.getElementById('viewer'),image=document.getElementById('vimage');
+let current=0,lastFocus=null;
+const photosPromise=fetch('photos.json').then(r=>{if(!r.ok)throw Error('無法載入照片資料');return r.json()});
+async function show(index){const photos=await photosPromise;current=(index+photos.length)%photos.length;const p=photos[current];image.src=p.src;image.alt=p.caption;document.getElementById('vcount').textContent=`${String(current+1).padStart(2,'0')} / ${photos.length} · ${p.date.slice(11,16)}`;document.getElementById('vtitle').textContent=p.title;document.getElementById('vcaption').textContent=p.caption;if(!viewer.open){lastFocus=document.activeElement;viewer.showModal();document.body.classList.add('viewing');document.getElementById('close').focus()}}
+document.querySelectorAll('[data-index]').forEach(b=>b.addEventListener('click',()=>show(Number(b.dataset.index)).catch(()=>{location.href=b.querySelector('img').src})));
+document.getElementById('prev').onclick=()=>show(current-1);document.getElementById('next').onclick=()=>show(current+1);document.getElementById('close').onclick=()=>viewer.close();viewer.addEventListener('close',()=>{document.body.classList.remove('viewing');lastFocus?.focus()});viewer.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();show(current+1)}if(e.key==='ArrowLeft'){e.preventDefault();show(current-1)}});
+let startX=0;image.addEventListener('touchstart',e=>{startX=e.changedTouches[0].clientX},{passive:true});image.addEventListener('touchend',e=>{let delta=e.changedTouches[0].clientX-startX;if(Math.abs(delta)>70)show(current+(delta<0?1:-1))},{passive:true});
