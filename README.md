@@ -6,3 +6,5 @@
 - [立山黑部開發史](https://maskywg.github.io/tateyama-kurobe-development/)
 
 照片及影片擷取畫面由使用者提供。
+
+新增 86 秒配樂精華影片，含地點介紹與獨立字幕帶。網頁版為 1440×960，影片由訪客點選播放。
